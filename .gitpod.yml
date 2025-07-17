@@ -1,0 +1,26 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: إعداد بيئة التطوير
+    init: |
+      yes | sdkmanager --licenses
+      sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      npm install || true
+    command: |
+      # يمكنك تعديل الأمر حسب نوع المشروع
+      ./gradlew assembleDebug || npm run android || echo "جاهز للعمل على Android TV"
+
+ports:
+  - port: 8081
+    onOpen: open-preview
+
+vscode:
+  extensions:
+    - msjsdiag.vscode-react-native
+    - vscjava.vscode-gradle
+    - redhat.android
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+
+# إعدادات إضافية حسب الحاجة
