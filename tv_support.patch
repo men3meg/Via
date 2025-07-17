@@ -1,0 +1,148 @@
+diff --git a/app/build.gradle b/app/build.gradle
+index 5e8c783..1a2aabc 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ ... @@
+ dependencies {
++    implementation 'androidx.leanback:leanback:1.2.0'
+     // باقي المكتبات ...
+ }
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 4c7c8e2..e3bd9d5 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ ... @@
+ <application ...>
++    <uses-feature android:name="android.software.leanback" android:required="true" />
++    <activity
++        android:name=".ui.TvMainActivity"
++        android:label="@string/app_name"
++        android:theme="@style/Theme.Leanback">
++        <intent-filter>
++            <action android:name="android.intent.action.MAIN" />
++            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
++        </intent-filter>
++    </activity>
+     <!-- باقي الأنشطة ... -->
+ </application>
+diff --git a/app/src/main/java/com/example/via/ui/TvMainActivity.java b/app/src/main/java/com/example/via/ui/TvMainActivity.java
+new file mode 100644
+index 0000000..e4b0d7a
+--- /dev/null
++++ b/app/src/main/java/com/example/via/ui/TvMainActivity.java
+@@ ... @@
++package com.example.via.ui;
++
++import android.app.Activity;
++import android.os.Bundle;
++import android.view.KeyEvent;
++import android.webkit.WebView;
++import android.widget.Button;
++import android.widget.Toast;
++
++public class TvMainActivity extends Activity {
++    private Button btnGo, btnBack;
++    private WebView tvWebView;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_tv_main);
++
++        btnGo = findViewById(R.id.btn_go);
++        btnBack = findViewById(R.id.btn_back);
++        tvWebView = findViewById(R.id.tv_webview);
++
++        btnGo.setOnClickListener(v -> Toast.makeText(this, "تم اختيار زر اذهب!", Toast.LENGTH_SHORT).show());
++        btnBack.setOnClickListener(v -> Toast.makeText(this, "تم اختيار زر رجوع!", Toast.LENGTH_SHORT).show());
++
++        tvWebView.setFocusable(true);
++        tvWebView.setFocusableInTouchMode(true);
++        tvWebView.loadUrl("https://www.google.com");
++    }
++
++    @Override
++    public boolean onKeyDown(int keyCode, KeyEvent event) {
++        switch (keyCode) {
++            case KeyEvent.KEYCODE_DPAD_UP:
++                btnGo.requestFocus();
++                return true;
++            case KeyEvent.KEYCODE_DPAD_DOWN:
++                btnBack.requestFocus();
++                return true;
++            case KeyEvent.KEYCODE_DPAD_CENTER:
++            case KeyEvent.KEYCODE_ENTER:
++                if (btnGo.isFocused()) {
++                    btnGo.performClick();
++                    return true;
++                } else if (btnBack.isFocused()) {
++                    btnBack.performClick();
++                    return true;
++                }
++                break;
++        }
++        return super.onKeyDown(keyCode, event);
++    }
++}
+diff --git a/app/src/main/res/layout/activity_tv_main.xml b/app/src/main/res/layout/activity_tv_main.xml
+new file mode 100644
+index 0000000..6a2fcd8
+--- /dev/null
++++ b/app/src/main/res/layout/activity_tv_main.xml
+@@ ... @@
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="vertical"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:gravity="center"
++    android:background="@android:color/background_dark">
++
++    <WebView
++        android:id="@+id/tv_webview"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_weight="1"
++        android:focusable="true"
++        android:focusableInTouchMode="true"
++        android:background="#222" />
++
++    <Button
++        android:id="@+id/btn_go"
++        android:layout_width="250dp"
++        android:layout_height="80dp"
++        android:text="اذهب"
++        android:focusable="true"
++        android:focusableInTouchMode="true"
++        android:nextFocusDown="@+id/btn_back"
++        android:background="@drawable/focus_button_bg"/>
++
++    <Button
++        android:id="@+id/btn_back"
++        android:layout_width="250dp"
++        android:layout_height="80dp"
++        android:text="رجوع"
++        android:focusable="true"
++        android:focusableInTouchMode="true"
++        android:nextFocusUp="@+id/btn_go"
++        android:background="@drawable/focus_button_bg"/>
++</LinearLayout>
+diff --git a/app/src/main/res/drawable/focus_button_bg.xml b/app/src/main/res/drawable/focus_button_bg.xml
+new file mode 100644
+index 0000000..b8d5e9f
+--- /dev/null
++++ b/app/src/main/res/drawable/focus_button_bg.xml
+@@ ... @@
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_focused="true">
++        <shape android:shape="rectangle">
++            <solid android:color="#FFC107"/>
++            <corners android:radius="12dp"/>
++        </shape>
++    </item>
++    <item>
++        <shape android:shape="rectangle">
++            <solid android:color="#424242"/>
++            <corners android:radius="12dp"/>
++        </shape>
++    </item>
++</selector>
