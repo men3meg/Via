@@ -1,0 +1,15 @@
+android {
+    defaultConfig {
+        // 1. TV uses API 21+ (Leanback needs 21 anyway)
+        minSdk 21
+        // 2. Tell Play Console this APK is for TV
+        resConfigs "tv"
+    }
+}
+
+dependencies {
+    // Leanback UI widgets + TV-optimised utilities
+    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
+    // Optional: leanback-preference for TV settings screen
+    implementation 'androidx.leanback:leanback-preference:1.2.0-alpha02'
+}
