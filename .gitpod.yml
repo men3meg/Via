@@ -2,17 +2,30 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: |
-      sudo apt-get update
-      sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
-      git clone https://github.com/flutter/flutter.git -b stable --depth 1
-      echo "export PATH=\"\$PATH:/workspace/Via/flutter/bin\"" >> ~/.bashrc
+  - name: Setup Environment
+    init: |
+      # تحديث متغيرات البيئة
+      echo "export ANDROID_SDK_ROOT=\"/home/gitpod/android-sdk\"" >> ~/.bashrc
+      echo "export PATH=\"\$PATH:\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin\"" >> ~/.bashrc
       source ~/.bashrc
-      flutter doctor -v
-      flutter config --enable-web
+      
+      # تثبيت تبعيات المشروع
       flutter pub get
-    command: flutter run -d web-server --web-port 3000
+      
+      # إنشاء ملف local.properties
+      echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+      
+      # قبول تراخيص Android نهائياً
+      yes | flutter doctor --android-licenses
+
+    command: flutter build apk --release
 
 ports:
-  - port: 3000
-    onOpen: open-preview
+  - port: 8080
+    onOpen: ignore
+
+vscode:
+  extensions:
+    - dart-code.dart-code
+    - dart-code.flutter
+    - nash.awesome-flutter-snippets
