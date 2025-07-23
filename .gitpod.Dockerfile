@@ -9,3 +9,4 @@ RUN sudo apt-get update && \
 ENV PATH="$PATH:/home/gitpod/flutter/bin"
 RUN flutter config --enable-web && \
     flutter doctor
+RUN sudo apt-get install -y android-sdk
